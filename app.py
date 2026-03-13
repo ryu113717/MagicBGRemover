@@ -6,18 +6,15 @@ import os
 
 app = Flask(__name__)
 
-@app.route("/", methods=["GET", "POST"])
+@app.route("/", methods=["GET","POST"])
 def index():
+
     if request.method == "POST":
-        if "image" not in request.files:
-            return "No file uploaded", 400
 
         file = request.files["image"]
 
-        if file.filename == "":
-            return "No selected file", 400
-
         img = Image.open(file)
+
         output = remove(img)
 
         img_io = io.BytesIO()
@@ -28,11 +25,12 @@ def index():
             img_io,
             mimetype="image/png",
             as_attachment=True,
-            download_name="magicbg_removed.png"
+            download_name="removed.png"
         )
 
     return render_template("index.html")
 
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
-    app.run(host="0.0.0.0", port=port, debug=False)
+    app.run(host="0.0.0.0", port=port)
