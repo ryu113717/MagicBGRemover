@@ -1,87 +1,226 @@
 <!DOCTYPE html>
-<html>
+<html lang="ja">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MagicBGRemover | AI背景削除ツール</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
 
-<title>BGMagic</title>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #eef2ff, #f8fafc);
+            color: #111827;
+        }
 
-<style>
+        .wrapper {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
 
-body{
-font-family: Arial;
-text-align:center;
-background:#f5f5f5;
-padding-top:50px;
-}
+        .card {
+            width: 100%;
+            max-width: 680px;
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.08);
+            padding: 40px 28px;
+            text-align: center;
+        }
 
-.container{
-background:white;
-padding:30px;
-border-radius:10px;
-width:400px;
-margin:auto;
-box-shadow:0 0 10px rgba(0,0,0,0.1);
-}
+        .badge {
+            display: inline-block;
+            background: #ede9fe;
+            color: #6d28d9;
+            font-size: 13px;
+            font-weight: bold;
+            padding: 8px 14px;
+            border-radius: 999px;
+            margin-bottom: 18px;
+        }
 
-button{
-padding:10px 20px;
-font-size:16px;
-background:#4CAF50;
-color:white;
-border:none;
-border-radius:5px;
-cursor:pointer;
-}
+        h1 {
+            margin: 0;
+            font-size: 38px;
+            line-height: 1.2;
+        }
 
-button:hover{
-background:#45a049;
-}
+        .sub {
+            margin-top: 14px;
+            color: #4b5563;
+            font-size: 16px;
+            line-height: 1.7;
+        }
 
-img{
-margin-top:20px;
-max-width:100%;
-}
+        .upload-box {
+            margin-top: 30px;
+            border: 2px dashed #c4b5fd;
+            border-radius: 20px;
+            padding: 32px 20px;
+            background: #faf5ff;
+            transition: 0.2s;
+            cursor: pointer;
+        }
 
-</style>
+        .upload-box.dragover {
+            background: #ede9fe;
+            border-color: #7c3aed;
+        }
 
+        .upload-box p {
+            margin: 10px 0 0;
+            color: #6b7280;
+            font-size: 15px;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .btn {
+            margin-top: 22px;
+            padding: 14px 24px;
+            font-size: 16px;
+            font-weight: bold;
+            color: white;
+            background: linear-gradient(135deg, #7c3aed, #4f46e5);
+            border: none;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            opacity: 0.95;
+        }
+
+        .preview-wrap {
+            margin-top: 28px;
+        }
+
+        .preview-wrap img {
+            max-width: 100%;
+            max-height: 360px;
+            border-radius: 18px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            display: none;
+        }
+
+        .note {
+            margin-top: 24px;
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        .features {
+            margin-top: 28px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .feature {
+            background: #f9fafb;
+            border-radius: 16px;
+            padding: 14px 10px;
+            font-size: 14px;
+            color: #374151;
+        }
+
+        @media (max-width: 640px) {
+            .card {
+                padding: 28px 18px;
+            }
+
+            h1 {
+                font-size: 30px;
+            }
+
+            .features {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
-
 <body>
+    <div class="wrapper">
+        <div class="card">
+            <div class="badge">AI BACKGROUND REMOVER</div>
 
-<div class="container">
+            <h1>MagicBGRemover</h1>
+            <p class="sub">
+                画像をアップロードするだけで、背景を自動で削除します。<br>
+                面倒な編集なしで、透過PNGをすぐ作成できます。
+            </p>
 
-<h1>BGMagic</h1>
+            <form method="POST" enctype="multipart/form-data">
+                <label for="imageInput" class="upload-box" id="dropArea">
+                    <div style="font-size: 42px;">🪄</div>
+                    <strong>ここに画像をドラッグ＆ドロップ</strong>
+                    <p>またはクリックして画像を選択</p>
+                </label>
 
-<p>Upload image to remove background</p>
+                <input type="file" name="image" id="imageInput" accept="image/*" required>
 
-<form method="POST" enctype="multipart/form-data">
+                <div class="preview-wrap">
+                    <img id="preview" alt="プレビュー画像">
+                </div>
 
-<input type="file" name="image" id="imageInput">
+                <button type="submit" class="btn">背景を削除する</button>
+            </form>
 
-<br><br>
+            <div class="features">
+                <div class="feature">無料で使える</div>
+                <div class="feature">AIで自動処理</div>
+                <div class="feature">スマホ対応</div>
+            </div>
 
-<button type="submit">Remove Background</button>
+            <p class="note">
+                JPG / PNG 画像に対応
+            </p>
+        </div>
+    </div>
 
-</form>
+    <script>
+        const input = document.getElementById("imageInput");
+        const preview = document.getElementById("preview");
+        const dropArea = document.getElementById("dropArea");
 
-<img id="preview">
+        input.addEventListener("change", function () {
+            const file = this.files[0];
+            if (file) {
+                preview.src = URL.createObjectURL(file);
+                preview.style.display = "block";
+            }
+        });
 
-</div>
+        dropArea.addEventListener("dragover", function (e) {
+            e.preventDefault();
+            dropArea.classList.add("dragover");
+        });
 
-<script>
+        dropArea.addEventListener("dragleave", function () {
+            dropArea.classList.remove("dragover");
+        });
 
-document.getElementById("imageInput").onchange = function(evt){
+        dropArea.addEventListener("drop", function (e) {
+            e.preventDefault();
+            dropArea.classList.remove("dragover");
 
-const [file] = this.files
-
-if(file){
-
-document.getElementById("preview").src = URL.createObjectURL(file)
-
-}
-
-}
-
-</script>
-
+            const file = e.dataTransfer.files[0];
+            if (file) {
+                input.files = e.dataTransfer.files;
+                preview.src = URL.createObjectURL(file);
+                preview.style.display = "block";
+            }
+        });
+    </script>
 </body>
 </html>
